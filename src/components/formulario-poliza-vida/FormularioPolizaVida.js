@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import PhoneTextFieldMask from '../text-field-masked/PhoneTextFieldMask';
 import DNITextFieldMask from './../text-field-masked/DNITextFieldMask';
+import TablaBeneficiarios from './tabla-beneficiarios/TablaBeneficiarios';
 
 const styles = theme => ({
   formulario: {
@@ -22,6 +23,9 @@ const styles = theme => ({
   },
   header: {
     marginTop: '3rem',
+  },
+  estadoPoliza:{
+    textAlign:'right'
   }
 });
 
@@ -44,6 +48,8 @@ class FormularioPolizaVida extends Component {
     direccion: "America 4122 entre Industria y O'Donnell",
     dni: "36739559",
     telefono: "01137607683",
+    idPoliza: "3403238",
+    estadoPoliza: "Vigente"
   };
 
   render() {
@@ -53,6 +59,12 @@ class FormularioPolizaVida extends Component {
       <form className={classes.formulario}>
 
         <Grid container spacing={24}>
+
+          <Grid item xs={12} className={classes.estadoPoliza}>
+          <Typography>Poliza #{this.state.idPoliza}</Typography>
+          <Typography>Estado: {this.state.estadoPoliza}</Typography>
+          </Grid>
+
           <Grid item xs={12}>
             <Typography variant="title" >
               Cliente
@@ -186,6 +198,9 @@ class FormularioPolizaVida extends Component {
             />
           </Grid>
 
+          <Grid item xs={12}>
+            <TablaBeneficiarios/>
+          </Grid>
 
         </Grid>
       </form>
