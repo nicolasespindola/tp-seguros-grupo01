@@ -24,8 +24,8 @@ const styles = theme => ({
   header: {
     marginTop: '3rem',
   },
-  estadoPoliza:{
-    textAlign:'right'
+  estadoPoliza: {
+    textAlign: 'right'
   }
 });
 
@@ -61,8 +61,8 @@ class FormularioPolizaVida extends Component {
         <Grid container spacing={24}>
 
           <Grid item xs={12} className={classes.estadoPoliza}>
-          <Typography>Poliza #{this.state.idPoliza}</Typography>
-          <Typography>Estado: {this.state.estadoPoliza}</Typography>
+            <Typography>Poliza #{this.state.idPoliza}</Typography>
+            <Typography>Estado: {this.state.estadoPoliza}</Typography>
           </Grid>
 
           <Grid item xs={12}>
@@ -175,6 +175,8 @@ class FormularioPolizaVida extends Component {
             </TextField>
           </Grid>
 
+          <Grid item xs={6}></Grid>
+
           <Grid item xs={6}>
             <TextField
               fullWidth
@@ -199,7 +201,7 @@ class FormularioPolizaVida extends Component {
           </Grid>
 
           <Grid item xs={12}>
-            <TablaBeneficiarios/>
+            <TablaBeneficiarios />
           </Grid>
 
         </Grid>

@@ -7,9 +7,12 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { 
+import {
   TextField,
-  MenuItem, 
+  MenuItem,
+  InputAdornment,
+  Toolbar,
+  Typography,
 } from '@material-ui/core'
 import purple from '@material-ui/core/colors/purple';
 
@@ -27,7 +30,24 @@ const styles = theme => ({
       borderBottomColor: purple[500],
     },
   },
+  inputText: {
+    fontAlign: 'right',
+    fontSize: '0.8125rem',
+  },
+  toolbar: {
+    //backgroundColor: theme.palette.primary.main,
+  }
 });
+
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
 let id = 0;
 function createData(nombre, edad, lazo, porcentajeAsignado) {
@@ -51,14 +71,19 @@ function TablaBeneficiarios(props) {
   const { classes } = props;
 
   return (
-    <Paper className={classes.root}>
+    <Paper>
+      <Toolbar className={classes.toolbar}>
+        <Typography variant="h6" id="tableTitle">
+          Beneficiarios
+        </Typography>
+      </Toolbar>
       <Table className={classes.table}>
-        <TableHead>
+        <TableHead className={classes.tableHead}>
           <TableRow>
-            <TableCell>Nombre y Apellido</TableCell>
-            <TableCell numeric>Edad</TableCell>
-            <TableCell numeric>Lazo/Vinculo</TableCell>
-            <TableCell numeric>Porcentaje asignado</TableCell>
+            <CustomTableCell>Nombre y Apellido</CustomTableCell>
+            <CustomTableCell>Edad</CustomTableCell>
+            <CustomTableCell>Lazo/Vinculo</CustomTableCell>
+            <CustomTableCell>Porcentaje asignado (%)</CustomTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -66,24 +91,31 @@ function TablaBeneficiarios(props) {
             return (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
-                <TextField
-                  fullWidth
-                  id="profesion"
-                  select
-                  className={classes.inputText}
-                  value={row.nombre}
-                  InputProps={{disableUnderline: true}}
-                >
-                {profesiones.map(option => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-            </TextField>
+                  <TextField
+                    fullWidth
+                    id="profesion"
+                    select
+                    value={row.nombre}
+                    InputProps={{ disableUnderline: true, className: classes.inputText }}
+                  >
+                    {profesiones.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </TableCell>
-                <TableCell numeric>{row.edad}</TableCell>
-                <TableCell numeric>{row.lazo}</TableCell>
-                <TableCell numeric>{row.porcentajeAsignado + "%"}</TableCell>
+                <TableCell >{row.edad}</TableCell>
+                <TableCell >{row.lazo}</TableCell>
+                <TableCell>
+                  <TextField
+                    className={classes.inputText}
+                    InputProps={{
+                      className: classes.inputText,
+                      endAdornment: <InputAdornment position="end">%</InputAdornment>
+                    }} />
+                </TableCell>
+
               </TableRow>
             );
           })}
