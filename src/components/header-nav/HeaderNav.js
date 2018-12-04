@@ -10,7 +10,10 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import HomeIcon from '@material-ui/icons/Home';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import PersonIcon from '@material-ui/icons/Person';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -63,28 +66,33 @@ function HeaderNav(props) {
       >
         <div className={classes.toolbar} />
         <List>
-          <ListItem button>
-            <ListItemIcon>
-              <PersonIcon />
-            </ListItemIcon>
-            <ListItemText primary="My galleries" />
-          </ListItem>
+          <Link to="/" style={{ textDecoration: 'none', color: 'unset' }}>
+            <ListItem button>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItem>
+          </Link>
         </List>
         <Divider />
         <List>
-          <ListItem button>
-            <ListItemIcon>
-              <PersonIcon />
-            </ListItemIcon>
-            <ListItemText primary="My galleries" />
-          </ListItem>
+          <Link to="/detalle" style={{ textDecoration: 'none', color: 'unset' }}>
+            <ListItem button>
+              <ListItemIcon>
+                <AssignmentIcon />
+              </ListItemIcon>
+              <ListItemText primary="Detalle" />
+            </ListItem>
+          </Link>
         </List>
-      </Drawer>
+        <Divider />
+      </Drawer >
       <main className={classes.content}>
         <div className={classes.toolbar} />
         {props.children}
       </main>
-    </div>
+    </div >
   );
 }
 
