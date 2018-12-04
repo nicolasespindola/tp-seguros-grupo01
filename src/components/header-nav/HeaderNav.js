@@ -13,7 +13,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import PersonIcon from '@material-ui/icons/Person';
+import Collapse from '@material-ui/core/Collapse';
 import { Link } from 'react-router-dom';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 
 const drawerWidth = 240;
 
@@ -43,57 +46,86 @@ const styles = theme => ({
     minWidth: 0, // So the Typography noWrap works
   },
   toolbar: theme.mixins.toolbar,
+  nested: {
+    paddingLeft: theme.spacing.unit * 4,
+  },
 });
 
-function HeaderNav(props) {
-  const { classes } = props;
+class HeaderNav extends React.Component {
 
-  return (
-    <div className={classes.root}>
-      <AppBar position="absolute" className={classes.appBar}>
-        <Toolbar>
-          <PersonIcon className={classes.appBarIcon} />
-          <Typography variant="h6" color="inherit" noWrap>
-            Segur-OS
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.toolbar} />
-        <List>
-          <Link to="/" style={{ textDecoration: 'none', color: 'unset' }}>
-            <ListItem button>
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary="Home" />
-            </ListItem>
-          </Link>
-        </List>
-        <Divider />
-        <List>
-          <Link to="/detalle" style={{ textDecoration: 'none', color: 'unset' }}>
-            <ListItem button>
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText primary="Detalle" />
-            </ListItem>
-          </Link>
-        </List>
-        <Divider />
-      </Drawer >
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        {props.children}
-      </main>
-    </div >
-  );
+  state = {
+    open: true,
+  }
+
+  handleClick = () => {
+    this.setState(state => ({ open: !state.open }));
+  };
+
+  render(){  
+    const { classes } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <AppBar position="absolute" className={classes.appBar}>
+          <Toolbar>
+            <PersonIcon className={classes.appBarIcon} />
+            <Typography variant="h6" color="inherit" noWrap>
+              Segur-OS
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className={classes.toolbar} />
+          <List>
+            <Link to="/" style={{ textDecoration: 'none', color: 'unset' }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+            </Link>
+          </List>
+          <Divider />
+          <List>
+            
+              <ListItem button onClick={this.handleClick}>
+                <ListItemIcon>
+                  <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Reportes" />
+                {this.state.open ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse in={this.state.open} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <Link to="/detalle" style={{ textDecoration: 'none', color: 'unset' }}>
+                    <ListItem button className={classes.nested}>
+                      <ListItemText inset primary="Detalle" />
+                    </ListItem>
+                  </Link>
+                  <Link to="/reportes/polizas" style={{ textDecoration: 'none', color: 'unset' }}>
+                    <ListItem button className={classes.nested}>
+                      <ListItemText inset primary="Polizas" />
+                    </ListItem>
+                  </Link>
+                </List>
+              </Collapse>
+            
+          </List>
+          <Divider />
+        </Drawer >
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          {this.props.children}
+        </main>
+      </div >
+    );
+  }
 }
 
 HeaderNav.propTypes = {
