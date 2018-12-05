@@ -5,7 +5,11 @@ import {
   MenuItem,
   Grid,
   Divider,
-  Typography
+  Typography,
+  Select,
+  InputLabel,
+  FormControl,
+  FormHelperText
 } from '@material-ui/core';
 import PhoneTextFieldMask from '../text-field-masked/PhoneTextFieldMask';
 import DNITextFieldMask from './../text-field-masked/DNITextFieldMask';
@@ -120,22 +124,21 @@ class FormularioPolizaVida extends Component {
             </Grid>
 
             <Grid item xs={6}>
-              <TextField
-                fullWidth
-                id="ocupacion"
-                select
-                label="Ocupación"
-                className={classes.inputText}
-                value={this.state.poliza.ocupacion.descripcion}
+            <FormControl fullWidth>
+              <InputLabel>Ocupacion</InputLabel>              
+              <Select
+                native
+                defaultValue={this.state.ocupaciones.findIndex(ocupacion => (this.state.poliza.ocupacion.descripcion === ocupacion.descripcion))}
                 onChange={this.handleChange}
-                helperText="Eliga una ocupación"
               >
-                {this.state.ocupaciones.map(ocupacion => (
-                  <MenuItem key={ocupacion.id_ocupacion} value={ocupacion.descripcion}>
+                {this.state.ocupaciones.map((ocupacion,index) => (
+                  <option key={ocupacion.id_ocupacion} value={index}>
                     {ocupacion.descripcion}
-                  </MenuItem>
+                  </option>
                 ))}
-              </TextField>
+              </Select>
+              <FormHelperText>Eliga una ocupacion</FormHelperText>
+              </FormControl>
             </Grid>
 
             {/* //-------------------------------------------------------------------------------------------------------------------------// */}
@@ -151,22 +154,21 @@ class FormularioPolizaVida extends Component {
             </Grid>
 
             <Grid item xs={6}>
-              <TextField
-                fullWidth
-                id="tipoCobertura"
-                select
-                label="Cobertura"
-                className={classes.inputText}
-                value={this.state.poliza.tipo_de_cobertura.descripcion}
-                onChange={this.handleChange}
-                helperText="Eliga el tipo de cobertura"
-              >
-                {this.state.tipo_de_coberturas.map(tipo_cobertura => (
-                  <MenuItem key={tipo_cobertura.id} value={tipo_cobertura.descripcion}>
-                    {tipo_cobertura.descripcion}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <FormControl fullWidth>
+                <InputLabel>Tipo de cobertura</InputLabel>
+                <Select
+                  native
+                  defaultValue={this.state.tipo_de_coberturas.findIndex(cobertura => (this.state.poliza.tipo_de_cobertura.descripcion === cobertura.descripcion))}
+                  onChange={this.handleChange}                
+                >
+                  {this.state.tipo_de_coberturas.map((tipo_cobertura, index) => (
+                    <option key={tipo_cobertura.id} value={index}>
+                      {tipo_cobertura.descripcion}
+                    </option>
+                  ))}
+                </Select>
+                <FormHelperText>Eliga una cobertura</FormHelperText>
+              </FormControl>
             </Grid>
 
             <Grid item xs={6}></Grid>

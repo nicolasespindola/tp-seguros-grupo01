@@ -13,8 +13,12 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
 } from '@material-ui/core'
 import purple from '@material-ui/core/colors/purple';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
 
 const styles = theme => ({
   root: {
@@ -60,45 +64,28 @@ function TablaBeneficiarios(props) {
         <TableHead className={classes.tableHead}>
           <TableRow>
             <CustomTableCell>Nombre y Apellido</CustomTableCell>
-            <CustomTableCell>Edad</CustomTableCell>
             <CustomTableCell>Lazo/Vinculo</CustomTableCell>
-            <CustomTableCell>Porcentaje asignado (%)</CustomTableCell>
+            <CustomTableCell numeric>Porcentaje asignado (%)</CustomTableCell>
+            <CustomTableCell></CustomTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {beneficiarios.map(beneficiario => {
             return (
               <TableRow key={beneficiario.persona.id_persona}>
-                <TableCell component="th" scope="row">
-                  <TextField
-                    fullWidth
-                    id="beneficiario"
-                    select
-                    value={beneficiario.persona.nombre}
-                    InputProps={{ disableUnderline: true, className: classes.inputText }}
-                  >
-                    {beneficiarios_posibles.map(beneficiario_posible => (
-                      <MenuItem key={beneficiario_posible.persona.id_persona} value={beneficiario_posible.persona.nombre}>
-                        {beneficiario_posible.persona.nombre}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                <TableCell>{beneficiario.persona.nombre}</TableCell>
+                <TableCell>{beneficiario.lazo_o_vinculo}</TableCell>
+                <TableCell numeric>{beneficiario.porcentaje_asignado + " %"}</TableCell>
+                <TableCell numeric>
+                  <IconButton color="primary"><EditIcon /></IconButton>
+                  <IconButton color="secondary"><DeleteIcon /> </IconButton>
                 </TableCell>
-                <TableCell >{beneficiario.persona.fecha_de_nacimiento}</TableCell>
-                <TableCell >{beneficiario.lazo_o_vinculo}</TableCell>
-                <TableCell>
-                  <TextField
-                    className={classes.inputText}
-                    InputProps={{
-                      className: classes.inputText,
-                      endAdornment: <InputAdornment position="end">%</InputAdornment>
-                    }}
-                    value={beneficiario.porcentaje_asignado} />
-                </TableCell>
-
               </TableRow>
             );
           })}
+          <TableRow>
+          <IconButton color="primary"><AddIcon /></IconButton>
+          </TableRow>
         </TableBody>
       </Table>
     </Paper>
