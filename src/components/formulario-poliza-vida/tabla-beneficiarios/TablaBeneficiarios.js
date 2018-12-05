@@ -34,9 +34,6 @@ const styles = theme => ({
     fontAlign: 'right',
     fontSize: '0.8125rem',
   },
-  toolbar: {
-    //backgroundColor: theme.palette.primary.main,
-  }
 });
 
 const CustomTableCell = withStyles(theme => ({
@@ -49,26 +46,8 @@ const CustomTableCell = withStyles(theme => ({
   },
 }))(TableCell);
 
-let id = 0;
-function createData(nombre, edad, lazo, porcentajeAsignado) {
-  id += 1;
-  return { id, nombre, edad, lazo, porcentajeAsignado };
-}
-
-const rows = [
-  createData('Nicolas Espindola', 26, "Hermano", 25),
-  createData('Nicolas Medela', 25, "Hermano", 50),
-  createData('Javier Devoto', 22, "Hermano", 25),
-];
-
-const profesiones = [
-  { value: "Nicolas Espindola", label: "Nicolas Espindola" },
-  { value: "Nicolas Medela", label: "Nicolas Medela" },
-  { value: "Javier Devoto", label: "Javier Devoto" },
-];
-
 function TablaBeneficiarios(props) {
-  const { classes } = props;
+  const { classes, beneficiarios, beneficiarios_posibles } = props;
 
   return (
     <Paper>
@@ -87,33 +66,34 @@ function TablaBeneficiarios(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => {
+          {beneficiarios.map(beneficiario => {
             return (
-              <TableRow key={row.id}>
+              <TableRow key={beneficiario.persona.id_persona}>
                 <TableCell component="th" scope="row">
                   <TextField
                     fullWidth
-                    id="profesion"
+                    id="beneficiario"
                     select
-                    value={row.nombre}
+                    value={beneficiario.persona.nombre}
                     InputProps={{ disableUnderline: true, className: classes.inputText }}
                   >
-                    {profesiones.map(option => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
+                    {beneficiarios_posibles.map(beneficiario_posible => (
+                      <MenuItem key={beneficiario_posible.persona.id_persona} value={beneficiario_posible.persona.nombre}>
+                        {beneficiario_posible.persona.nombre}
                       </MenuItem>
                     ))}
                   </TextField>
                 </TableCell>
-                <TableCell >{row.edad}</TableCell>
-                <TableCell >{row.lazo}</TableCell>
+                <TableCell >{beneficiario.persona.fecha_de_nacimiento}</TableCell>
+                <TableCell >{beneficiario.lazo_o_vinculo}</TableCell>
                 <TableCell>
                   <TextField
                     className={classes.inputText}
                     InputProps={{
                       className: classes.inputText,
                       endAdornment: <InputAdornment position="end">%</InputAdornment>
-                    }} />
+                    }}
+                    value={beneficiario.porcentaje_asignado} />
                 </TableCell>
 
               </TableRow>

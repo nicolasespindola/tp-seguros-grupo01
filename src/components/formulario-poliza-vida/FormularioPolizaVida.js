@@ -10,16 +10,13 @@ import {
 import PhoneTextFieldMask from '../text-field-masked/PhoneTextFieldMask';
 import DNITextFieldMask from './../text-field-masked/DNITextFieldMask';
 import TablaBeneficiarios from './tabla-beneficiarios/TablaBeneficiarios';
+import PolizaService from './../../services/PolizaService';
 
 const styles = theme => ({
   formulario: {
     backgroundColor: theme.palette.grey[200],
     padding: '3rem',
     display: 'flex',
-  },
-  inputText: {},
-  inputLabel: {
-    //fontWeight: 'bold',
   },
   header: {
     marginTop: '3rem',
@@ -30,182 +27,180 @@ const styles = theme => ({
 });
 
 class FormularioPolizaVida extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+    this.service = new PolizaService()
+  }
 
-  state = {
-    profesiones: [
-      { value: "Medico", label: "Medico" },
-      { value: "Bombero", label: "Bombero" },
-      { value: "Contador", label: "Contador" },
-    ],
-    coberturas: [
-      { value: "Todo riesgo", label: "Todo riesgo" },
-      { value: "Secuestro", label: "Secuestro" },
-      { value: "Enfermedad", label: "Enfermedad" },
-    ],
-    profesion: "Medico",
-    cobertura: "Todo riesgo",
-    nombreApellido: "Nicolas Espindola",
-    direccion: "America 4122 entre Industria y O'Donnell",
-    dni: "36739559",
-    telefono: "01137607683",
-    idPoliza: "3403238",
-    estadoPoliza: "Vigente"
-  };
+  async componentDidMount() {
+    try {
+      let poliza = await this.service.getPoliza(0)
+      let ocupaciones = await this.service.getOcupaciones()
+      let beneficiarios = await this.service.getBeneficiarios()
+      let tipo_de_coberturas = await this.service.getTiposDeCoberturas()
+      this.setState({ poliza, ocupaciones, beneficiarios, tipo_de_coberturas })
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
 
   render() {
     const { classes } = this.props;
-    const { profesiones, coberturas } = this.state;
     return (
-      <form className={classes.formulario}>
+      <React.Fragment>
+        {this.state.poliza && this.state.ocupaciones && this.state.beneficiarios && this.state.tipo_de_coberturas && <form className={classes.formulario}>
 
-        <Grid container spacing={24}>
+          <Grid container spacing={24}>
 
-          <Grid item xs={12} className={classes.estadoPoliza}>
-            <Typography>Poliza #{this.state.idPoliza}</Typography>
-            <Typography>Estado: {this.state.estadoPoliza}</Typography>
-          </Grid>
+            <Grid item xs={12} className={classes.estadoPoliza}>
+              <Typography>Poliza #{this.state.poliza.id_seguro_de_vida}</Typography>
+              <Typography>Estado: {this.state.poliza.seguro.estado}</Typography>
+            </Grid>
 
-          <Grid item xs={12}>
-            <Typography variant="title" >
-              Cliente
+            <Grid item xs={12}>
+              <Typography variant="title" >
+                Cliente
             </Typography>
-            <Typography variant="body2" gutterBottom>
-              Datos del interesado
+              <Typography variant="body2" gutterBottom>
+                Datos del interesado
             </Typography>
-            <Divider />
-          </Grid>
+              <Divider />
+            </Grid>
 
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              id="nombreApellido"
-              label="Nombre y apellido"
-              className={classes.inputText}
-              value={this.state.nombreApellido}
-              onChange={this.handleChange('name')}
-              InputLabelProps={{ shrink: true, className: classes.inputLabel }}
-            />
-          </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="nombreApellido"
+                label="Nombre y apellido"
+                className={classes.inputText}
+                value={this.state.poliza.seguro.cliente.persona.nombre}
+                onChange={this.handleChange('name')}
+                InputLabelProps={{ shrink: true, className: classes.inputLabel }}
+              />
+            </Grid>
 
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              id="dni"
-              label="DNI"
-              className={classes.inputText}
-              value={this.state.dni}
-              onChange={this.handleChange('name')}
-              InputLabelProps={{ shrink: true, className: classes.inputLabel }}
-              InputProps={{ inputComponent: DNITextFieldMask }}
-            />
-          </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                id="dni"
+                label="DNI"
+                className={classes.inputText}
+                value={this.state.poliza.seguro.cliente.persona.dni}
+                onChange={this.handleChange('name')}
+                InputLabelProps={{ shrink: true, className: classes.inputLabel }}
+                InputProps={{ inputComponent: DNITextFieldMask }}
+              />
+            </Grid>
 
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              id="telefono"
-              label="Telefono"
-              className={classes.inputText}
-              value={this.state.telefono}
-              onChange={this.handleChange('name')}
-              InputLabelProps={{ shrink: true, className: classes.inputLabel }}
-              InputProps={{ inputComponent: PhoneTextFieldMask }}
-            />
-          </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                id="telefono"
+                label="Telefono"
+                className={classes.inputText}
+                value={this.state.poliza.seguro.cliente.persona.telefono}
+                onChange={this.handleChange('name')}
+                InputLabelProps={{ shrink: true, className: classes.inputLabel }}
+                InputProps={{ inputComponent: PhoneTextFieldMask }}
+              />
+            </Grid>
 
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              id="direccion"
-              label="Direccion"
-              className={classes.inputText}
-              value={this.state.direccion}
-              onChange={this.handleChange('name')}
-              InputLabelProps={{ shrink: true, className: classes.inputLabel }}
-            />
-          </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="direccion"
+                label="Direccion"
+                className={classes.inputText}
+                value={this.state.poliza.seguro.cliente.persona.direccion}
+                onChange={this.handleChange('name')}
+                InputLabelProps={{ shrink: true, className: classes.inputLabel }}
+              />
+            </Grid>
 
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              id="profesion"
-              select
-              label="Profesión"
-              className={classes.inputText}
-              value={this.state.profesion}
-              onChange={this.handleChange('currency')}
-              helperText="Eliga una profesión"
-            >
-              {profesiones.map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                id="ocupacion"
+                select
+                label="Ocupación"
+                className={classes.inputText}
+                value={this.state.poliza.ocupacion.descripcion}
+                onChange={this.handleChange}
+                helperText="Eliga una ocupación"
+              >
+                {this.state.ocupaciones.map(ocupacion => (
+                  <MenuItem key={ocupacion.id_ocupacion} value={ocupacion.descripcion}>
+                    {ocupacion.descripcion}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
-          {/* //-------------------------------------------------------------------------------------------------------------------------// */}
+            {/* //-------------------------------------------------------------------------------------------------------------------------// */}
 
-          <Grid item xs={12}>
-            <Typography variant="title" className={classes.header}>
-              Poliza
+            <Grid item xs={12}>
+              <Typography variant="title" className={classes.header}>
+                Poliza
             </Typography>
-            <Typography variant="body2" gutterBottom>
-              Datos sobre la poliza
+              <Typography variant="body2" gutterBottom>
+                Datos sobre la poliza
             </Typography>
-            <Divider />
-          </Grid>
+              <Divider />
+            </Grid>
 
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              id="tipoCobertura"
-              select
-              label="Cobertura"
-              className={classes.inputText}
-              value={this.state.cobertura}
-              onChange={this.handleChange('currency')}
-              helperText="Eliga el tipo de cobertura"
-            >
-              {coberturas.map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                id="tipoCobertura"
+                select
+                label="Cobertura"
+                className={classes.inputText}
+                value={this.state.poliza.tipo_de_cobertura.descripcion}
+                onChange={this.handleChange}
+                helperText="Eliga el tipo de cobertura"
+              >
+                {this.state.tipo_de_coberturas.map(tipo_cobertura => (
+                  <MenuItem key={tipo_cobertura.id} value={tipo_cobertura.descripcion}>
+                    {tipo_cobertura.descripcion}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
-          <Grid item xs={6}></Grid>
+            <Grid item xs={6}></Grid>
 
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              type="date"
-              id="fechaInicio"
-              label="Fecha de inicio"
-              className={classes.inputText}
-              InputLabelProps={{ shrink: true, className: classes.inputLabel }}
-              defaultValue="2017-05-24"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              type="date"
-              id="fechaFin"
-              label="Fecha de fin"
-              className={classes.inputText}
-              InputLabelProps={{ shrink: true, className: classes.inputLabel }}
-              defaultValue="2017-05-24"
-            />
-          </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                type="date"
+                id="fechaInicio"
+                label="Fecha de inicio"
+                className={classes.inputText}
+                InputLabelProps={{ shrink: true, className: classes.inputLabel }}
+                value={this.state.poliza.seguro.fecha_inicio}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                type="date"
+                id="fechaFin"
+                label="Fecha de fin"
+                className={classes.inputText}
+                InputLabelProps={{ shrink: true, className: classes.inputLabel }}
+                value={this.state.poliza.seguro.fecha_vencimiento}
+              />
+            </Grid>
 
-          <Grid item xs={12}>
-            <TablaBeneficiarios />
-          </Grid>
+            <Grid item xs={12}>
+              <TablaBeneficiarios beneficiarios={this.state.poliza.beneficiarios} beneficiarios_posibles={this.state.beneficiarios} />
+            </Grid>
 
-        </Grid>
-      </form>
+          </Grid>
+        </form>}
+      </React.Fragment>
     )
   }
 
