@@ -8,7 +8,7 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core'
-
+import HomeService from '../../services/HomeService'
 const styles = theme => ({
   root: {
     width: '100%',
@@ -32,13 +32,23 @@ const CustomTableCell = withStyles(theme => ({
 }))(TableCell);
 
 class Home extends Component {
-  state = {
-    polizas: [
-      { id: 1, cliente: "Mauro", fechaInicio: '03/12/2018', fechaFin: '03/12/2018', estado: "Vigente", prima: 3000, tipoDeRiesgo: "Seguro por Defuncion" },
-      { id: 2, cliente: "Carlos", fechaInicio: '03/12/2018', fechaFin: '03/12/2018', estado: "Anulada", prima: 3000000, tipoDeRiesgo: "Seguro por Defuncion" },
-    ]
-  };
+  constructor(props) {
+    super(props)
+    this.state = {
+      polizas: []}
+    this.service = new HomeService()
 
+  }
+
+async componentDidMount() {
+    try {
+      let polizasJson = await this.service.getHome()
+      this.setState({ polizas : polizasJson})
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
   render() {
     const { classes } = this.props;
 
@@ -51,7 +61,7 @@ class Home extends Component {
             <CustomTableCell>Fecha de inicio</CustomTableCell>
             <CustomTableCell>Fecha de fin</CustomTableCell>
             <CustomTableCell>Prima ($)</CustomTableCell>
-            <CustomTableCell>Tipo de riesgo</CustomTableCell>
+            <CustomTableCell>Tipo de cobertura</CustomTableCell>
             <CustomTableCell>Estado</CustomTableCell>
           </TableRow>
         </TableHead>
@@ -59,12 +69,12 @@ class Home extends Component {
           {this.state.polizas.map(poliza => {
             return (
               <TableRow onClick={this.handleClick}>
-                <TableCell>{poliza.id}</TableCell>
-                <TableCell>{poliza.cliente}</TableCell>
-                <TableCell>{poliza.fechaInicio}</TableCell>
-                <TableCell>{poliza.fechaFin}</TableCell>
+                <TableCell>{poliza.id_seguro}</TableCell>
+                <TableCell>{poliza.nombreCliente}</TableCell>
+                <TableCell>{poliza.fecha_inicio}</TableCell>
+                <TableCell>{poliza.fecha_vencimiento}</TableCell>
                 <TableCell numeric>{"$ " + poliza.prima}</TableCell>
-                <TableCell>{poliza.tipoDeRiesgo}</TableCell>
+                <TableCell>{poliza.tipo_de_cobertura}</TableCell>
                 <TableCell>{poliza.estado}</TableCell>
               </TableRow>
             )
