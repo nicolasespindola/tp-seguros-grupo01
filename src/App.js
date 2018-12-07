@@ -12,7 +12,8 @@ class App extends Component {
       <BrowserRouter>
         <HeaderNav>
           <Route path="/" exact component={Home} />
-          <Route path="/detalle/:id" exact component={FormularioPolizaVida} />
+          <Route path="/poliza/vida/new" exact component={FormularioPolizaVida} />
+          <Route path="/seguro/vida/:id" exact component={FormularioPolizaVida} />
           <Route path="/reportes/comisiones" exact component={ReportePoliza} />
         </HeaderNav>
       </BrowserRouter>
