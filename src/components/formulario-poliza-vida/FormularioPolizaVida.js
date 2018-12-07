@@ -170,6 +170,16 @@ class FormularioPolizaVida extends Component {
                   </FormControl>
                 </Grid>
 
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Valor de riesgo"
+                    className={classes.inputText}
+                    value={this.state.poliza.ocupacion.valor_de_riesgo}
+                    InputLabelProps={{ shrink: true, className: classes.inputLabel }}
+                  />
+                </Grid>
+
                 {/* //-------------------------------------------------------------------------------------------------------------------------// */}
 
                 <Grid item xs={12}>
@@ -205,7 +215,25 @@ class FormularioPolizaVida extends Component {
                   </FormControl>
                 </Grid>
 
-                <Grid item xs={6}></Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    fullWidth
+                    label="Monto asegurado base"
+                    className={classes.inputText}
+                    value={this.state.poliza.tipo_de_cobertura.monto_asegurado_base}
+                    InputLabelProps={{ shrink: true, className: classes.inputLabel }}
+                  />
+                </Grid>
+
+                <Grid item xs={3}>
+                  <TextField
+                    fullWidth
+                    label="Valor prima base"
+                    className={classes.inputText}
+                    value={this.state.poliza.tipo_de_cobertura.valor_prima_base}
+                    InputLabelProps={{ shrink: true, className: classes.inputLabel }}
+                  />
+                </Grid>
 
                 <Grid item xs={6}>
                   <TextField
@@ -311,7 +339,19 @@ class FormularioPolizaVida extends Component {
       })
     }
 
+    if (this.state.isFormDirty) {
+      this.calcularPrimaYMontoAsegurado()
+    }
+
     console.log(this.state)
+  }
+
+  calcularPrimaYMontoAsegurado = () => {
+    this.setState((prevState, newProps) => {
+      prevState.poliza.seguro.monto_asegurado = prevState.poliza.tipo_de_cobertura.monto_asegurado_base
+      prevState.poliza.seguro.prima = prevState.poliza.tipo_de_cobertura.valor_prima_base * prevState.poliza.ocupacion.valor_de_riesgo
+      return { prevState, ...newProps }
+    })
   }
 
   handleChangeDNI = async (event) => {
