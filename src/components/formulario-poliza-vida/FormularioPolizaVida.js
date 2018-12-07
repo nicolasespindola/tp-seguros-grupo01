@@ -17,6 +17,7 @@ import TablaBeneficiarios from './tabla-beneficiarios/TablaBeneficiarios';
 import PolizaService from './../../services/PolizaService';
 import SaveIcon from '@material-ui/icons/Save';
 import ClienteService from './../../services/ClienteService';
+import { withRouter } from 'react-router-dom'
 
 const styles = theme => ({
   formulario: {
@@ -46,14 +47,14 @@ class FormularioPolizaVida extends Component {
     this.state = {}
     this.service = new PolizaService()
     this.clienteService = new ClienteService()
-    this.polizaID = this.props.match.params.id
+    this.polizaID = this.props.match.params.id ? this.props.match.params.id : -1
   }
 
   async componentDidMount() {
     try {
       let poliza = await this.service.getPoliza(this.polizaID)
       let ocupaciones = await this.service.getOcupaciones()
-      let beneficiarios = await this.service.getBeneficiarios(this.polizaID)
+      let beneficiarios = await this.service.getBeneficiarios()
       let tipo_de_coberturas = await this.service.getTiposDeCoberturas()
       this.setState({ poliza, ocupaciones, beneficiarios, tipo_de_coberturas })
       this.ready = true
@@ -78,13 +79,15 @@ class FormularioPolizaVida extends Component {
           this.state.beneficiarios &&
           this.state.tipo_de_coberturas &&
           <React.Fragment>
-            <form className={classes.formulario}>
+            <form className={classes.formulario} onSubmit={this.handleFormSubmit}>
 
               <Grid container spacing={24}>
 
                 <Grid item xs={12} className={classes.estadoPoliza}>
                   <Typography>Poliza #{this.state.poliza.seguro.id_seguro}</Typography>
                   <Typography>Estado: {this.state.poliza.seguro.estado.toUpperCase()}</Typography>
+                  <Typography>Prima: {this.state.poliza.seguro.prima}</Typography>
+                  <Typography>Suma asegurada: {this.state.poliza.seguro.suma_asegurada}</Typography>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -118,7 +121,6 @@ class FormularioPolizaVida extends Component {
                     className={classes.inputText}
                     value={this.state.poliza.seguro.cliente.persona.nombre}
                     InputLabelProps={{ shrink: true, className: classes.inputLabel }}
-                    InputProps={{ readOnly: true }}
                   />
                 </Grid>
 
@@ -130,7 +132,7 @@ class FormularioPolizaVida extends Component {
                     className={classes.inputText}
                     value={this.state.poliza.seguro.cliente.persona.telefono}
                     InputLabelProps={{ shrink: true, className: classes.inputLabel }}
-                    InputProps={{ readOnly: true, inputComponent: PhoneTextFieldMask }}
+                    InputProps={{ inputComponent: PhoneTextFieldMask }}
                   />
                 </Grid>
 
@@ -142,7 +144,6 @@ class FormularioPolizaVida extends Component {
                     className={classes.inputText}
                     value={this.state.poliza.seguro.cliente.persona.direccion}
                     InputLabelProps={{ shrink: true, className: classes.inputLabel }}
-                    InputProps={{ readOnly: true }}
                   />
                 </Grid>
 
@@ -152,6 +153,7 @@ class FormularioPolizaVida extends Component {
                     <Select
                       native
                       name="ocupacion"
+                      required
                       defaultValue={this.getDefaultIndexOcupacion()}
                       onChange={this.handleChange}
                     >
@@ -186,6 +188,7 @@ class FormularioPolizaVida extends Component {
                     <Select
                       native
                       name="tipo_de_cobertura"
+                      required
                       defaultValue={this.getDefaultIndexCobertura()}
                       onChange={this.handleChange}
                     >
@@ -210,6 +213,7 @@ class FormularioPolizaVida extends Component {
                     type="date"
                     name="fecha_inicio"
                     label="Fecha de inicio"
+                    required
                     className={classes.inputText}
                     InputLabelProps={{ shrink: true, className: classes.inputLabel }}
                     value={this.state.poliza.seguro.fecha_inicio}
@@ -222,6 +226,7 @@ class FormularioPolizaVida extends Component {
                     type="date"
                     name="fecha_vencimiento"
                     label="Fecha de fin"
+                    required
                     className={classes.inputText}
                     InputLabelProps={{ shrink: true, className: classes.inputLabel }}
                     value={this.state.poliza.seguro.fecha_vencimiento}
@@ -239,7 +244,7 @@ class FormularioPolizaVida extends Component {
                 </Grid>
 
                 <Grid container item xs={12} justify="flex-end">
-                  <Button fullWidth color="primary" type="submit" variant="outlined" disabled={!this.state.isFormDirty} ><SaveIcon className={classes.leftIcon} />Guardar cambios</Button>
+                  <Button fullWidth color="primary" type="submit" variant="outlined" disabled={!this.state.isFormDirty}><SaveIcon className={classes.leftIcon} />Guardar cambios</Button>
                 </Grid>
 
               </Grid>
@@ -275,7 +280,7 @@ class FormularioPolizaVida extends Component {
       let cliente = await this.clienteService.getClientePorDNI(dni)
       await this.setState(prevState => {
         prevState.poliza.seguro.cliente = cliente
-        return cliente
+        return prevState
       })
     }
   }
@@ -347,6 +352,26 @@ class FormularioPolizaVida extends Component {
       return prevState
     })
   }
+
+  handleFormSubmit = async (event) => {
+    event.preventDefault()
+    if (this.state.poliza.seguro.id_seguro === -1) {
+      try {
+        let nuevaPolizaID = await this.service.crearPoliza(this.state.poliza)
+
+        if (nuevaPolizaID) {
+          alert("Poliza #" + nuevaPolizaID + " generada con exito!")
+          this.props.history.push('/seguro/vida/' + nuevaPolizaID)
+        }
+      }
+      catch (e) {
+        alert(e)
+      }
+    }
+    else if (this.state.poliza.seguro.id_seguro >= 0) {
+      this.service.actualizarPoliza(this.state.poliza)
+    }
+  }
 }
 
-export default withStyles(styles)(FormularioPolizaVida);
+export default withStyles(styles)(withRouter(FormularioPolizaVida));

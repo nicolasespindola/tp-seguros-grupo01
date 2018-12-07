@@ -54,67 +54,67 @@ export default class FormularioBeneficiario extends Component {
     const { personas } = this.props
     return (
       <Dialog open={this.props.open} onClose={this.handleClose} onEnter={this.handleEnter}>
-        <form onSubmit={this.handleSubmit}>
-          <DialogTitle>Beneficiario</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={24}>
-              <Grid item xs={4}>
-                <FormControl>
-                  <InputLabel>Persona</InputLabel>
-                  <Select
-                    name="persona"
-                    native
-                    required
-                    defaultValue={this.getDefaultIndex()}
-                    onChange={this.handleChange}
-                  >
-                    <option value={-1}>
-                      {""}
-                    </option>
-                    {personas.map((beneficiarioPosible, index) => {
-                      return (
-                        <option key={"ben_" + index} value={index}>
-                          {beneficiarioPosible.nombre}
-                        </option>
-                      )
-                    })}
-                  </Select>
-                </FormControl>
-              </Grid>
 
-              <Grid item xs={4}>
-                <TextField
-                  name="lazo_o_vinculo"
-                  label="Lazo/Vinculo"
+        <DialogTitle>Beneficiario</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={24}>
+            <Grid item xs={4}>
+              <FormControl>
+                <InputLabel>Persona</InputLabel>
+                <Select
+                  name="persona"
+                  native
                   required
-                  defaultValue={this.props.beneficiario.lazo_o_vinculo}
-                  value={this.lazo_o_vinculo}
+                  defaultValue={this.getDefaultIndex()}
                   onChange={this.handleChange}
-                />
-              </Grid>
-
-              <Grid item xs={4}>
-                <TextField
-                  name="porcentaje_asignado"
-                  label="Porcentaje asignado"
-                  required
-                  defaultValue={this.props.beneficiario.porcentaje_asignado}
-                  value={this.porcentaje_asignado}
-                  onChange={this.handleChange}
-                />
-              </Grid>
+                >
+                  <option value={-1}>
+                    {""}
+                  </option>
+                  {personas.map((beneficiarioPosible, index) => {
+                    return (
+                      <option key={"ben_" + index} value={index}>
+                        {beneficiarioPosible.nombre}
+                      </option>
+                    )
+                  })}
+                </Select>
+              </FormControl>
             </Grid>
-          </DialogContent>
 
-          <DialogActions>
-            <Button type="submit" color="primary" disabled={!this.state.isFormDirty}>
-              Guardar
+            <Grid item xs={4}>
+              <TextField
+                name="lazo_o_vinculo"
+                label="Lazo/Vinculo"
+                required
+                defaultValue={this.props.beneficiario.lazo_o_vinculo}
+                value={this.lazo_o_vinculo}
+                onChange={this.handleChange}
+              />
+            </Grid>
+
+            <Grid item xs={4}>
+              <TextField
+                name="porcentaje_asignado"
+                label="Porcentaje asignado"
+                required
+                defaultValue={this.props.beneficiario.porcentaje_asignado}
+                value={this.porcentaje_asignado}
+                onChange={this.handleChange}
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+
+        <DialogActions>
+          <Button type="submit" color="primary" disabled={!this.state.isFormDirty} onClick={this.handleSubmit}>
+            Guardar
             </Button>
-            <Button onClick={this.handleClose} color="primary">
-              Cancelar
+          <Button onClick={this.handleClose} color="primary">
+            Cancelar
             </Button>
-          </DialogActions>
-        </form>
+        </DialogActions>
+
       </Dialog >
     )
   }

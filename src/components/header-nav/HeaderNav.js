@@ -13,6 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import PersonIcon from '@material-ui/icons/Person';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import Collapse from '@material-ui/core/Collapse';
 import { Link } from 'react-router-dom';
@@ -91,7 +92,20 @@ class HeaderNav extends React.Component {
                 <ListItemText primary="Home" />
               </ListItem>
             </Link>
+
           </List>
+          <Divider />
+          <List>
+            <Link to="/poliza/vida/new" style={{ textDecoration: 'none', color: 'unset' }}>
+              <ListItem button>
+                <ListItemIcon>
+                  <AddCircleIcon />
+                </ListItemIcon>
+                <ListItemText inset primary="Nuevo Seguro" />
+              </ListItem>
+            </Link>
+          </List>
+
           <Divider />
           <List>
 
@@ -104,11 +118,6 @@ class HeaderNav extends React.Component {
             </ListItem>
             <Collapse in={this.state.open} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <Link to="/detalle/1" style={{ textDecoration: 'none', color: 'unset' }}>
-                  <ListItem button className={classes.nested}>
-                    <ListItemText inset primary="Detalle" />
-                  </ListItem>
-                </Link>
                 <Link to="/reportes/comisiones" style={{ textDecoration: 'none', color: 'unset' }}>
                   <ListItem button className={classes.nested}>
                     <ListItemIcon>

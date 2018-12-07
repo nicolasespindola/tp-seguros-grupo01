@@ -1,9 +1,11 @@
+import axios from 'axios';
+
 const baseURL = "http://localhost:9000"
 export default class ClienteService {
   getClientePorDNI = async (dni) => {
     try {
-      let response = await fetch(baseURL + '/cliente/dni/' + dni)
-      let json = await response.json()
+      let response = await axios.get(baseURL + '/cliente/dni/' + dni)
+      let json = response.data
       return json;
     }
     catch (e) {
