@@ -2,9 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
-  TextField,
-  MenuItem,
-  InputAdornment,
   Toolbar,
   Typography,
   Table,
@@ -16,9 +13,9 @@ import {
   IconButton,
 } from '@material-ui/core'
 import purple from '@material-ui/core/colors/purple';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
+import RowBeneficiario from './row-beneficiario/RowBeneficiario';
+import FormularioBeneficiario from './formulario-beneficiario/FormularioBeneficiario';
 
 const styles = theme => ({
   root: {
@@ -50,46 +47,85 @@ const CustomTableCell = withStyles(theme => ({
   },
 }))(TableCell);
 
-function TablaBeneficiarios(props) {
-  const { classes, beneficiarios, beneficiarios_posibles } = props;
+class TablaBeneficiarios extends React.Component {
 
-  return (
-    <Paper>
-      <Toolbar className={classes.toolbar}>
-        <Typography variant="h6" id="tableTitle">
-          Beneficiarios
+  state = { openDialog: false }
+
+  render() {
+    const { classes, beneficiarios } = this.props;
+
+    return (
+      <React.Fragment>
+        <Paper>
+          <Toolbar className={classes.toolbar}>
+            <Typography variant="h6" id="tableTitle">
+              Beneficiarios
         </Typography>
-      </Toolbar>
-      <Table className={classes.table}>
-        <TableHead className={classes.tableHead}>
-          <TableRow>
-            <CustomTableCell>Nombre y Apellido</CustomTableCell>
-            <CustomTableCell>Lazo/Vinculo</CustomTableCell>
-            <CustomTableCell numeric>Porcentaje asignado (%)</CustomTableCell>
-            <CustomTableCell></CustomTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {beneficiarios.map(beneficiario => {
-            return (
-              <TableRow key={beneficiario.persona.id_persona}>
-                <TableCell>{beneficiario.persona.nombre}</TableCell>
-                <TableCell>{beneficiario.lazo_o_vinculo}</TableCell>
-                <TableCell numeric>{beneficiario.porcentaje_asignado + " %"}</TableCell>
-                <TableCell numeric>
-                  <IconButton color="primary"><EditIcon /></IconButton>
-                  <IconButton color="secondary"><DeleteIcon /> </IconButton>
-                </TableCell>
+          </Toolbar>
+          <Table className={classes.table}>
+            <TableHead className={classes.tableHead}>
+              <TableRow>
+                <CustomTableCell>Nombre y Apellido</CustomTableCell>
+                <CustomTableCell>Lazo/Vinculo</CustomTableCell>
+                <CustomTableCell numeric>Porcentaje asignado (%)</CustomTableCell>
+                <CustomTableCell></CustomTableCell>
               </TableRow>
-            );
-          })}
-          <TableRow>
-          <IconButton color="primary"><AddIcon /></IconButton>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </Paper>
-  );
+            </TableHead>
+            <TableBody>
+              {beneficiarios.map((beneficiario, index) => {
+                return (
+                  <RowBeneficiario
+                    key={"beneficiario_" + index}
+                    beneficiario={beneficiario}
+                    onEdit={this.handleEdit}
+                    onDelete={this.handleDelete}
+                    index={index}
+                  />
+                );
+              })}
+              <TableRow>
+                <TableCell><IconButton color="primary" onClick={this.handleCreate}><AddIcon /></IconButton></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Paper>
+
+        {this.state.selected &&
+          <FormularioBeneficiario
+            open={this.state.openDialog}
+            onClose={this.handleClose}
+            onSubmit={this.handleSubmit}
+
+            beneficiario={this.state.selected}
+            index={this.state.selectedIndex}
+
+            personas={this.props.personas}
+          />
+        }
+      </React.Fragment>
+    );
+  }
+
+  handleClose = () => {
+    this.setState({ openDialog: false, selected: null, selectedIndex: null, })
+  }
+
+  handleDelete = (index) => {
+    this.props.onDelete(index)
+  }
+
+  handleSubmit = (beneficiario, index) => {
+    this.props.onSubmit(beneficiario, index)
+    this.handleClose()
+  }
+
+  handleEdit = (beneficiario, index) => {
+    this.setState({ selected: beneficiario, selectedIndex: index, openDialog: true })
+  }
+
+  handleCreate = () => {
+    this.setState({ selected: {}, openDialog: true })
+  }
 }
 
 TablaBeneficiarios.propTypes = {
