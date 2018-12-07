@@ -54,7 +54,7 @@ class ReportePoliza extends React.Component {
 
   async componentDidMount(){
     try{
-      let reporte = await this.service.getReportePoliza()
+      let reporte = await this.service.getReporteAgentes()
       this.setState({ reporteUsuarios: reporte });
     }
     catch(e){
@@ -74,17 +74,17 @@ class ReportePoliza extends React.Component {
               <CustomTableCell>ID</CustomTableCell>
               <CustomTableCell>Nombre agente</CustomTableCell>
               <CustomTableCell>Polizas vigentes</CustomTableCell>
-              <CustomTableCell>Comision total ($)</CustomTableCell>
+              <CustomTableCell>Comision total</CustomTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {this.state.reporteUsuarios.map(consulta => {
               return (
-                <TableRow onClick={this.handleClick} className={classes.row} key={consulta.id}>
-                  <TableCell>{consulta.id}</TableCell>
+                <TableRow onClick={this.handleClick} className={classes.row} key={consulta.idAgente}>
+                  <TableCell>{consulta.idAgente}</TableCell>
                   <TableCell>{consulta.nombreAgente}</TableCell>
-                  <TableCell>{consulta.cantPolizasVigentes}</TableCell>
-                  <TableCell>{"$ " + consulta.comisionTotal}</TableCell>
+                  <TableCell>{consulta.polizasVigentes}</TableCell>
+                  <TableCell>{"$ " + consulta.comisionAnual}</TableCell>
                 </TableRow>
               )
             })}
