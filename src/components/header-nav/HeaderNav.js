@@ -13,6 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import PersonIcon from '@material-ui/icons/Person';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import Collapse from '@material-ui/core/Collapse';
 import { Link } from 'react-router-dom';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -61,7 +62,7 @@ class HeaderNav extends React.Component {
     this.setState(state => ({ open: !state.open }));
   };
 
-  render(){  
+  render() {
     const { classes } = this.props;
 
     return (
@@ -93,29 +94,32 @@ class HeaderNav extends React.Component {
           </List>
           <Divider />
           <List>
-            
-              <ListItem button onClick={this.handleClick}>
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Reportes" />
-                {this.state.open ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  <Link to="/detalle" style={{ textDecoration: 'none', color: 'unset' }}>
-                    <ListItem button className={classes.nested}>
-                      <ListItemText inset primary="Detalle" />
-                    </ListItem>
-                  </Link>
-                  <Link to="/reportes/polizas" style={{ textDecoration: 'none', color: 'unset' }}>
-                    <ListItem button className={classes.nested}>
-                      <ListItemText inset primary="Polizas" />
-                    </ListItem>
-                  </Link>
-                </List>
-              </Collapse>
-            
+
+            <ListItem button onClick={this.handleClick}>
+              <ListItemIcon>
+                <AssignmentIcon />
+              </ListItemIcon>
+              <ListItemText primary="Reportes" />
+              {this.state.open ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={this.state.open} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <Link to="/detalle/1" style={{ textDecoration: 'none', color: 'unset' }}>
+                  <ListItem button className={classes.nested}>
+                    <ListItemText inset primary="Detalle" />
+                  </ListItem>
+                </Link>
+                <Link to="/reportes/comisiones" style={{ textDecoration: 'none', color: 'unset' }}>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <AttachMoneyIcon />
+                    </ListItemIcon>
+                    <ListItemText inset primary="Comisiones" />
+                  </ListItem>
+                </Link>
+              </List>
+            </Collapse>
+
           </List>
           <Divider />
         </Drawer >
