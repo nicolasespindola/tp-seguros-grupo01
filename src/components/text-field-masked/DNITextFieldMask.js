@@ -8,6 +8,7 @@ export default function DNITextFieldMask(props) {
   return (
     <MaskedInput
       {...other}
+      placeholderChar={' '}
       ref={inputRef}
       mask={[/\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/]}
       showMask

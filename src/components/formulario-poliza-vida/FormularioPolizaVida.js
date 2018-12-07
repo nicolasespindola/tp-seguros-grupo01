@@ -16,6 +16,7 @@ import DNITextFieldMask from './../text-field-masked/DNITextFieldMask';
 import TablaBeneficiarios from './tabla-beneficiarios/TablaBeneficiarios';
 import PolizaService from './../../services/PolizaService';
 import SaveIcon from '@material-ui/icons/Save';
+import ClienteService from './../../services/ClienteService';
 
 const styles = theme => ({
   formulario: {
@@ -44,7 +45,8 @@ class FormularioPolizaVida extends Component {
     super(props)
     this.state = {}
     this.service = new PolizaService()
-    this.polizaID = this.props.match.params.id;
+    this.clienteService = new ClienteService()
+    this.polizaID = this.props.match.params.id
   }
 
   async componentDidMount() {
@@ -88,10 +90,10 @@ class FormularioPolizaVida extends Component {
                 <Grid item xs={12}>
                   <Typography variant="title" >
                     Cliente
-            </Typography>
+                  </Typography>
                   <Typography variant="body2" gutterBottom>
                     Datos del interesado
-            </Typography>
+                  </Typography>
                   <Divider />
                 </Grid>
 
@@ -99,6 +101,7 @@ class FormularioPolizaVida extends Component {
                   <TextField
                     fullWidth
                     label="DNI"
+                    required
                     className={classes.inputText}
                     value={this.state.poliza.seguro.cliente.persona.dni}
                     onChange={this.handleChangeDNI}
@@ -111,6 +114,7 @@ class FormularioPolizaVida extends Component {
                   <TextField
                     fullWidth
                     label="Nombre y apellido"
+                    required
                     className={classes.inputText}
                     value={this.state.poliza.seguro.cliente.persona.nombre}
                     InputLabelProps={{ shrink: true, className: classes.inputLabel }}
@@ -122,6 +126,7 @@ class FormularioPolizaVida extends Component {
                   <TextField
                     fullWidth
                     label="Telefono"
+                    required
                     className={classes.inputText}
                     value={this.state.poliza.seguro.cliente.persona.telefono}
                     InputLabelProps={{ shrink: true, className: classes.inputLabel }}
@@ -133,6 +138,7 @@ class FormularioPolizaVida extends Component {
                   <TextField
                     fullWidth
                     label="Direccion"
+                    required
                     className={classes.inputText}
                     value={this.state.poliza.seguro.cliente.persona.direccion}
                     InputLabelProps={{ shrink: true, className: classes.inputLabel }}
@@ -145,9 +151,13 @@ class FormularioPolizaVida extends Component {
                     <InputLabel>Ocupacion</InputLabel>
                     <Select
                       native
-                      defaultValue={this.state.ocupaciones.findIndex(ocupacion => (this.state.poliza.ocupacion.descripcion === ocupacion.descripcion))}
+                      name="ocupacion"
+                      defaultValue={this.getDefaultIndexOcupacion()}
                       onChange={this.handleChange}
                     >
+                      <option value={-1}>
+                        {""}
+                      </option>
                       {this.state.ocupaciones.map((ocupacion, index) => (
                         <option key={ocupacion.id_ocupacion} value={index}>
                           {ocupacion.descripcion}
@@ -175,9 +185,13 @@ class FormularioPolizaVida extends Component {
                     <InputLabel>Tipo de cobertura</InputLabel>
                     <Select
                       native
-                      defaultValue={this.state.tipo_de_coberturas.findIndex(cobertura => (this.state.poliza.tipo_de_cobertura.descripcion === cobertura.descripcion))}
+                      name="tipo_de_cobertura"
+                      defaultValue={this.getDefaultIndexCobertura()}
                       onChange={this.handleChange}
                     >
+                      <option value={-1}>
+                        {""}
+                      </option>
                       {this.state.tipo_de_coberturas.map((tipo_cobertura, index) => (
                         <option key={'cobertura_' + tipo_cobertura.id_tipo_de_cobertura} value={index}>
                           {tipo_cobertura.descripcion}
@@ -194,20 +208,24 @@ class FormularioPolizaVida extends Component {
                   <TextField
                     fullWidth
                     type="date"
+                    name="fecha_inicio"
                     label="Fecha de inicio"
                     className={classes.inputText}
                     InputLabelProps={{ shrink: true, className: classes.inputLabel }}
                     value={this.state.poliza.seguro.fecha_inicio}
+                    onChange={this.handleChange}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
                     type="date"
+                    name="fecha_vencimiento"
                     label="Fecha de fin"
                     className={classes.inputText}
                     InputLabelProps={{ shrink: true, className: classes.inputLabel }}
                     value={this.state.poliza.seguro.fecha_vencimiento}
+                    onChange={this.handleChange}
                   />
                 </Grid>
 
@@ -233,14 +251,71 @@ class FormularioPolizaVida extends Component {
     )
   }
 
-  handleChange = (value) => { }
+  getDefaultIndexOcupacion = () => {
+    try {
+      return this.state.ocupaciones.findIndex(ocupacion => { return this.state.poliza.ocupacion.descripcion === ocupacion.descripcion })
+    }
+    catch (e) {
+      return -1
+    }
+  }
 
-  handleChangeDNI = (event) => {
+  getDefaultIndexCobertura = () => {
+    try {
+      return this.state.tipo_de_coberturas.findIndex(cobertura => (this.state.poliza.tipo_de_cobertura.descripcion === cobertura.descripcion))
+    }
+    catch (e) {
+      return -1
+    }
+  }
+
+  handleDNISearch = async (text) => {
+    let dni = text.replace('.', '').replace('.', '').trim()
+    if (dni.length >= 8) {
+      let cliente = await this.clienteService.getClientePorDNI(dni)
+      await this.setState(prevState => {
+        prevState.poliza.seguro.cliente = cliente
+        return cliente
+      })
+    }
+  }
+
+  handleChange = async (event) => {
     let value = event.target.value
-    this.setState(prevState => {
+    let name = event.target.name
+    let type = event.target.type
+
+    if (name === "tipo_de_cobertura") {
+      await this.setState(prevState => {
+        prevState.poliza[name] = this.state.tipo_de_coberturas[value]
+        return prevState
+      })
+    }
+
+    if (type === "date") {
+      await this.setState(prevState => {
+        prevState.poliza.seguro[name] = value
+        return prevState
+      })
+    }
+
+    if (name === "ocupacion") {
+      await this.setState(prevState => {
+        prevState.poliza[name] = this.state.ocupaciones[value]
+        return prevState
+      })
+    }
+
+    console.log(this.state)
+  }
+
+  handleChangeDNI = async (event) => {
+    let value = event.target.value
+    await this.setState(prevState => {
       prevState.poliza.seguro.cliente.persona.dni = value
       return prevState
     })
+    this.handleDNISearch(value)
   }
 
   handleSubmit = (beneficiario, index) => {
